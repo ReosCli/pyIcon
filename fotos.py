@@ -8,7 +8,10 @@ from os import listdir, walk
 from os.path import isfile, join
 
 
-global config_json
+icono_original  = 'icono.png'  #min size 1024 x 1024
+logo_original   = 'logo.png'   #min size 1024 x 1024
+color_fondo     = (255, 255, 255, 255)
+
 data = {}
 data['images'] = []
 list_splash_android = ""
@@ -25,6 +28,10 @@ def write_config(line):
 
 
 def read_icon():
+    try:
+        os.remove('config.xml.log')
+    except:
+        pass
     mi_path = "./resources/"
     for (path, ficheros, archivos) in walk(mi_path):
         if path == "./resources/android/icon":
@@ -70,7 +77,7 @@ def write_icon():
         config_json = json.load(file)
 
     for fotos in config_json:
-        with open('icono.png', 'r+b') as f:
+        with open(icono_original, 'r+b') as f:
             if (fotos["platform"] == "android") & (str(fotos["type"]) == "icono"):
                 w = fotos['width']
                 h = fotos['height']
@@ -83,7 +90,8 @@ def write_icon():
                     newLogo.save("./resources/android/myAndroidIcon/" +
                                  fotos['name'], image.format)
                 f.close()
-                log = "<icon src='./resources/android/icon/" +  fotos['name'] + "' />"
+                log = '<icon src="./resources/android/icon/' +  fotos['name'] + '" platform="'+fotos['platform']+'" width="'+str(fotos['width'])+'" height="'+str(fotos['height'])+'" />'
+                print log
                 write_config(log)
 
     for fotos in config_json:
@@ -100,7 +108,8 @@ def write_icon():
                     newLogo.save("./resources/ios/myIosIcon/" +
                                  fotos['name'], image.format)
                 f.close()
-                log = "<icon src='./resources/ios/icon/" +  fotos['name'] + "' />"
+                log = '<icon src="./resources/ios/icon/' +  fotos['name'] + '" platform="'+fotos['platform']+'" width="'+str(fotos['width'])+'" height="'+str(fotos['height'])+'" />'
+                print log
                 write_config(log)
 
     file = open("json_splash.json", "w")
@@ -157,52 +166,87 @@ def write_splash():
                 os.stat("./resources/android/myAndroidSplash/")
             except:
                 os.mkdir("./resources/android/myAndroidSplash/")
-            logo = Image.open('./logo.png', 'r')
+            logo = Image.open(logo_original, 'r')
             fondoW = int(fotos['width'])
-            fondoH = int(fotos['height'])
-            logoW, logoH = logo.size
-            facLogo = int(logoW) / int(logoH)
-            ProporcionBgLogo = 5
-            color = (255, 255, 255, 255)
-
-            newLogoH = fondoW / ProporcionBgLogo
-            newLogoW = newLogoH * facLogo
-            newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
-
-            fondo = Image.new('RGBA', (fondoW, fondoH), (color))
-
-            centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)
-            fondo.paste(newLogo, centrado, newLogo)
-            fondo.save('./resources/android/myAndroidSplash/'+fotos['name'])
-            log = "<icon src='./resources/android/splash/" + \
-                fotos['name'] + "' />"
+            fondoH = int(fotos['height'])           
+            logoW, logoH = logo.size         
+            try:                   
+                facLogo = int(logoW) / int(logoH)
+                ProporcionBgLogo = 5
+                color = color_fondo
+                newLogoH = fondoW / ProporcionBgLogo
+                newLogoW = newLogoH * facLogo
+                newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
+                fondo = Image.new('RGBA', (fondoW, fondoH), (color))
+                centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)                         
+            except:            
+                facLogo =  int(logoH) / int(logoW) 
+                ProporcionBgLogo = 5
+                color = color_fondo
+                newLogoH = fondoW / ProporcionBgLogo
+                newLogoW = newLogoH * facLogo
+                newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
+                fondo = Image.new('RGBA', (fondoW, fondoH), (color))
+                centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)
+            try:
+                fondo.paste(newLogo, centrado, newLogo)
+            except:
+                fondo.paste(newLogo, centrado)
+            fondo.save('./resources/android/myAndroidSplash/' + fotos['name'])
+            fondo.close
+            log = '<icon src="./resources/android/splash/' +  fotos['name'] + '" platform="'+fotos['platform']+'" width="'+str(fotos['width'])+'" height="'+str(fotos['height'])+'" />'
+          
+            print log
             write_config(log)
-
+                
+       
+    write_config('<platform name="ios">')
     for fotos in config_json:
         if ((str(fotos["platform"]) == "ios") & (str(fotos["type"]) == "splash")):          
             try:
                 os.stat("./resources/ios/myIosSplash/")
             except:
                 os.mkdir("./resources/ios/myIosSplash/")
-            logo = Image.open('./logo.png', 'r')
+
+            logo = Image.open(logo_original, 'r')
             fondoW = int(fotos['width'])
-            fondoH = int(fotos['height'])
-            logoW, logoH = logo.size
-            facLogo = int(logoW) / int(logoH)
-            ProporcionBgLogo = 5
-            color = (255, 255, 255, 255)
-
-            newLogoH = fondoW / ProporcionBgLogo
-            newLogoW = newLogoH * facLogo
-            newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
-
-            fondo = Image.new('RGBA', (fondoW, fondoH), (color))
-
-            centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)
-            fondo.paste(newLogo, centrado, newLogo)
-            fondo.save('./resources/ios/myIosSplash/'+fotos['name'])
-            log = "<icon src='./resources/ios/splash/" + fotos['name'] + "' />"
+            fondoH = int(fotos['height'])           
+            logoW, logoH = logo.size         
+            try:                   
+                facLogo = int(logoW) / int(logoH)
+                ProporcionBgLogo = 5
+                color = color_fondo
+                newLogoH = fondoW / ProporcionBgLogo
+                newLogoW = newLogoH * facLogo
+                newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
+                fondo = Image.new('RGBA', (fondoW, fondoH), (color))
+                centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)                         
+            except:            
+                facLogo =  int(logoH) / int(logoW) 
+                ProporcionBgLogo = 5
+                color = color_fondo
+                newLogoH = fondoW / ProporcionBgLogo
+                newLogoW = newLogoH * facLogo
+                newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
+                fondo = Image.new('RGBA', (fondoW, fondoH), (color))
+                centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)
+            try:
+                fondo.paste(newLogo, centrado, newLogo)
+            except:
+                fondo.paste(newLogo, centrado)
+            fondo.save('./resources/ios/myIosSplash/' + fotos['name'])
+            fondo.close          
+            log = '\t<icon src="./resources/ios/splash/' +  fotos['name'] + '" platform="'+fotos['platform']+'" width="'+str(fotos['width'])+'" height="'+str(fotos['height'])+'" />'
+            print log
             write_config(log)
+    write_config("</platform>")
+
+
+
+
+
+
+
 
 read_icon()
 write_icon()
