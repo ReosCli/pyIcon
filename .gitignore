@@ -10,3 +10,5 @@ icono.png
 mis_datos.txt
 config.xml.log
 .gitignore
+logo*
+icono*
