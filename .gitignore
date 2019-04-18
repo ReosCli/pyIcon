@@ -3,6 +3,8 @@
 /resources/ios/myIosIcon/
 /resources/ios/myIosSplash/
 config.json
-log.png
+logo.png
+icono.png
 mis_datos.txt
 cpnfig.xml.log
+.gitignore
