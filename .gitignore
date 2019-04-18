@@ -1,7 +1,7 @@
-/resources/android/myAndroidIcon/
-/resources/android/myAndroidSplash/
-/resources/ios/myIosIcon/
-/resources/ios/myIosSplash/
+/resources/android/myAndroidIcon/*
+/resources/android/myAndroidSplash/*
+/resources/ios/myIosIcon/*
+/resources/ios/myIosSplash/*
 config.json
 json_iconos.json
 json_splash.json
