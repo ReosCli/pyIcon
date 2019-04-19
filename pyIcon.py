@@ -10,7 +10,7 @@ data['images'] = []
 # Parametros editables
 icono_original      = 'icon.png'    # min size 1024 x 1024
 logo_original       = 'logo.jpg'    # min size 1024 x 1024
-ProporcionBgLogo    = 5             # 0 = Tamaño original,  5 = TamañoOriginal / 5
+ProporcionBgLogo    = 5             # 5 = Escala 1:5 AnchoFondo:AnchoLogo
 color_fondo         = (255, 255, 255, 255)
 
 def write_config(line):
