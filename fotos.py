@@ -7,7 +7,7 @@ from os.path import isfile, join
 
 
 icono_original  = 'icono.png'  #min size 1024 x 1024
-logo_original   = 'logoH.png'   #min size 1024 x 1024
+logo_original   = 'logoHT.png'   #min size 1024 x 1024
 color_fondo     = (255, 255, 255, 255)
 
 data = {}
@@ -153,6 +153,8 @@ def read_splash():
 
 
 def write_splash():
+    color = color_fondo
+    ProporcionBgLogo = 5
     with open('json_splash.json') as file:
         config_json = json.load(file)
         
@@ -166,29 +168,19 @@ def write_splash():
             logo = Image.open(logo_original, 'r')
             fondoW = int(fotos['width'])
             fondoH = int(fotos['height'])           
-            logoW, logoH = logo.size         
-            try:
-                if(fondoW < fondoH):                   
-                    facLogo = int(logoW) / int(logoH)
-                    ProporcionBgLogo = 5
-                    color = color_fondo
-                    newLogoH = fondoW / ProporcionBgLogo
-                    newLogoW = newLogoH * facLogo
-                    newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
-                    fondo = Image.new('RGBA', (fondoW, fondoH), (color))
-                    centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)                         
-            
-                if(fondoW > fondoH):           
-                    facLogo =  int(logoH) / int(logoW) 
-                    ProporcionBgLogo = 5
-                    color = color_fondo
-                    newLogoH = fondoW / ProporcionBgLogo
-                    newLogoW = newLogoH * facLogo
-                    newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
-                    fondo = Image.new('RGBA', (fondoW, fondoH), (color))
-                    centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)
-            except: 
-                pass
+            logoW, logoH = logo.size                 
+                   
+            facLogo  =   float(logoW) / float(logoH)           
+            newLogoH = fondoW / ProporcionBgLogo
+            newLogoW = newLogoH * facLogo     
+            newLogoH = int(newLogoH)
+            newLogoW = int(newLogoW)   
+
+
+            newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)    
+            fondo = Image.new('RGBA', (fondoW, fondoH), (color))
+            centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)
+
             try:
                 fondo.paste(newLogo, centrado, newLogo)
             except:
@@ -201,7 +193,7 @@ def write_splash():
             write_config(log)
     write_config('</platform>')
                 
-       
+    
     write_config('<platform name="ios">')
     for fotos in config_json:
         if ((str(fotos["platform"]) == "ios") & (str(fotos["type"]) == "splash")):          
@@ -214,24 +206,17 @@ def write_splash():
             fondoW = int(fotos['width'])
             fondoH = int(fotos['height'])           
             logoW, logoH = logo.size         
-            try:                   
-                facLogo = int(logoW) / int(logoH)
-                ProporcionBgLogo = 5
-                color = color_fondo
-                newLogoH = fondoW / ProporcionBgLogo
-                newLogoW = newLogoH * facLogo
-                newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
-                fondo = Image.new('RGBA', (fondoW, fondoH), (color))
-                centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)                         
-            except:            
-                facLogo =  int(logoH) / int(logoW) 
-                ProporcionBgLogo = 5
-                color = color_fondo
-                newLogoH = fondoW / ProporcionBgLogo
-                newLogoW = newLogoH * facLogo
-                newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)
-                fondo = Image.new('RGBA', (fondoW, fondoH), (color))
-                centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)
+            facLogo  =   float(logoW) / float(logoH)           
+            newLogoH = fondoW / ProporcionBgLogo
+            newLogoW = newLogoH * facLogo     
+            newLogoH = int(newLogoH)
+            newLogoW = int(newLogoW)   
+
+
+            newLogo = logo.resize((newLogoW, newLogoH), Image.ANTIALIAS)    
+            fondo = Image.new('RGBA', (fondoW, fondoH), (color))
+            centrado = ((fondoW - newLogoW) / 2, (fondoH - newLogoH) / 2)
+
             try:
                 fondo.paste(newLogo, centrado, newLogo)
             except:
@@ -250,8 +235,8 @@ def write_splash():
 
 
 
-# read_icon()
-# write_icon()
+read_icon()
+write_icon()
 read_splash()
 write_splash()
 
